@@ -1,10 +1,17 @@
 class Post < ApplicationRecord
-  belongs_to :wall
   belongs_to :user
-  belongs_to :admin
-  belongs_to :super_admin
-	has_many :comments
+  has_many :comment
+  has_many_attached :image
+  has_many :likes, dependent: :destroy
+  has_many :downvotes, dependent: :destroy
+  has_many :inappropriates, dependent: :destroy
+  has_one_attached :image
 
-	validates :title, :presence => true 
-	validates :description, length: {in: 20..10000} 
+  def self.search(search)
+    if search
+      where(["title LIKE ?","%#{search}%"])
+    else
+      all
+    end
+  end
 end

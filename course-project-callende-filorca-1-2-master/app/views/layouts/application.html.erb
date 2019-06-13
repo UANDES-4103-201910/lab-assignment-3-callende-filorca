@@ -1,30 +1,113 @@
+
 <!DOCTYPE html>
 <html>
   <head>
-    <title>EnojaDitto</title>
+
+    <title>EnojaDitto - <%= yield(:title) %></title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   </head>
 
   <body>
+<div class="buscador pull-right">
+      <form class="navbar-form" role="search">
+         <div class="input-group" >
+             <%= form_tag posts_path, :method => 'get' do %> <%= text_field_tag :search, params[:search] %> <%= submit_tag "Search", :class =>"glyphicon glyphicon-search" %> <% end %> 
+         </div>
+       </form>
+</div>
+
+
+
+
     <div class="logo">
       <%= image_tag("logos/rojo.png",width: '150px') %>
       <%= image_tag("logos/texto.png",width: '150px') %>
+
     </div>
+
+
+
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">WebSiteName</a>
+          <a class="navbar-brand" href="/">Home</a>
         </div>
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">Top</a></li>
-          <li><a href="#">Sign In/Up</a></li>
+        <ul class="navbar-header">
+          <a class="navbar-brand" href="/top">Top</a>
+        </ul>
+        <% if user_signed_in? %>
+        <ul class="navbar-header">
+          <a class="navbar-brand" href="/walls">Wall</a>
+        </ul>
+        <% end %>
+        <% if user_signed_in? %>
+        <ul class="navbar-header">
+            <a class="navbar-brand" href="/posts/new">New Post</a>
+        </ul>
+        <% end %>
+        <% if user_signed_in? && current_user.sadmin?%>
+        <ul class="navbar-header">
+            <a class="navbar-brand" href="/users/">All Users</a>
+        </ul>
+        <% end %>
+        <ul class="navbar-header navbar-right">
+          <% if user_signed_in? %>
+            <a><%= link_to(current_user.email, "/users/edit" ,class: "navbar-brand") %></a>
+            <a><%= link_to('Logout', destroy_user_session_path, method: :delete , class: "navbar-brand") %></a>
+
+          <% else %>
+            <a class="navbar-brand" href="/users/sign_in">Sign In</a>
+            <a class="navbar-brand" >/</a>
+            <a class="navbar-brand" href="/users/sign_up">Sign Up</a>
+          <% end %>
         </ul>
       </div>
     </nav>
+
+    <% if flash[:notice] %>
+    <div class = "alert alert-success">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <%= flash[:notice] %>
+    </div>
+  <% elsif flash[:error] %>
+    <div class = "alert alert-error">
+      <button type="button" class = "close" data-dismiss="alert">&times;</button>
+      <%= flash[:error] %>
+    </div>
+  <% elsif flash[:alert] %>
+    <div class = "alert">
+      <button type="button" class = "close" data-dismiss="alert">&times;</button>
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
     <%= yield %>
   </body>
 </html>
+
+<footer class="page-footer font-small blue">
+<br>
+<br>
+<hr />
+  <!-- Copyright -->
+  <div class="footer-copyright text-center py-1">Terms of use:
+    <a href="/use"> EnojaDitto use terms</a>
+  </div>
+  <br>
+
+  <div class="footer-copyright text-center py-1">Terms of service: 
+    <a href="/service"> EnojaDitto service terms</a>
+  </div>
+
+  <br>
+<br>
+
+  <!-- Copyright -->
+
+</footer>

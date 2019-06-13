@@ -1,69 +1,215 @@
-<p id="notice"><%= notice %></p>
+<% title "Post" %>
 
-<p>
-  <strong>Gps:</strong>
-  <%= @post.gps %>
-</p>
+<style media="screen">
+	input[type=submit] {
+  width: 100%;
+  margin-top: 0%;
+  width: fit-content ;
+  position: relative;
+  border-color: #ff4900!important;
+  background-color: #ffd9b3!important;
+  color: #ff4900!important;
+  }
+	.grid-container {
+	  display: grid;
+	  grid-template-columns: auto auto auto auto;
+	  grid-gap: 10px;
+	  background-color: #2196F3;
+	  padding: 10px;
+	}
 
-<p>
-  <strong>Title:</strong>
-  <%= @post.title %>
-</p>
+	.grid-container > div {
+	  background-color: rgba(255, 255, 255, 0.8);
+	  text-align: center;
+	  padding: 20px 0;
+	  font-size: 30px;
+	}
 
-<p>
-  <strong>Description:</strong>
-  <%= @post.description %>
-</p>
+</style>
 
-<p>
-  <strong>Location:</strong>
-  <%= @post.location %>
-</p>
+<div class="container">
+	<h1>Post</h1>
+	<div class="row">
 
-<p>
-  <strong>Country:</strong>
-  <%= @post.country %>
-</p>
 
-<p>
-  <strong>Status:</strong>
-  <%= @post.status %>
-</p>
 
-<p>
-  <strong>City:</strong>
-  <%= @post.city %>
-</p>
+	    <div class="col-md-8 col-md-offset-0">
+        <div class="post_area">
 
-<p>
-  <strong>Files:</strong>
-  <%= @post.files %>
-</p>
+    		<form action="" method="POST" >
 
-<p>
-  <strong>State:</strong>
-  <%= @post.state %>
-</p>
+						<div class="form-group">
+							<br>
+							<% if @post.user_id.present? %>
+								<a><%= link_to('Posted by: '+' '+User.find(@post.user_id).name+' '+User.find(@post.user_id).lastname, '/users/show/'+User.find(@post.user_id).id.to_s )%></a>
+							<% end %>
+						</div>
 
-<p>
-  <strong>Wall:</strong>
-  <%= @post.wall %>
-</p>
+						<div class="form-group">
+								<label for="title">Title: <span class="require"><%= @post.title %></span></label>
+						</div>
 
-<p>
-  <strong>User:</strong>
-  <%= @post.user %>
-</p>
+						<div class="form-group">
+								<label for="date">Creation Date: <span class="require"><%= @post.created_at %></span></label>
+						</div>
 
-<p>
-  <strong>Admin:</strong>
-  <%= @post.admin %>
-</p>
+    		    <div class="form-group">
+    		        <label for="location">Location: <span class="require"><%= @post.location %></span></label>
+    		    </div>
 
-<p>
-  <strong>Super admin:</strong>
-  <%= @post.super_admin %>
-</p>
+            <div class="form-group">
+    		        <label for="country">Country: <span class="require"><%= @post.country %></span></label>
+    		    </div>
 
-<%= link_to 'Edit', edit_post_path(@post) %> |
-<%= link_to 'Back', posts_path %>
+            <div class="form-group">
+    		        <label for="city">City: <span class="require"><%= @post.city %></span></label>
+    		    </div>
+
+    		    <div class="form-group" >
+    		        <label for="description">Description: </label>
+                <div class="post_text">
+                  <%= @post.description %>
+                </div>
+								<div class="form-group">
+
+
+								</div>
+    		    </div>
+							<div class="form-group" align="center">
+							<%= image_tag(@post.image, style:'width:200px')  if @post.image.attached?%>
+							</div>
+    		</form>
+        </div>
+
+        <div class="container">
+					<div class="col-sm-12">
+						<h2>Comments</h2>
+						<div class="container-grid">
+						<% if user_signed_in? %>
+						<h4><%= @post.likes.count %> <%= (@post.likes.count) == 1 ? 'Upvote' : 'Upvotes'%>	<%= @post.downvotes.count %> <%= (@post.downvotes.count) == 1 ? 'Downvote' : 'Downvotes'%>	<%= @post.inappropriates.count %> <%= (@post.inappropriates.count) == 1 ? 'Inappropriate' : 'Inappropriates'%></h4>
+						<%= link_to "Add Comment", new_comment_path(post_id: @post.id) %>
+						<div>
+						<br>
+						</div>
+
+
+
+							<div class="col-sm-1 ">
+						<% pre_like = @post.likes.find { |like| like.user_id == current_user.id} %>
+						<% if pre_like %>
+						  <%= button_to 'Upvote', post_like_path(@post, pre_like), method: :delete %>
+						<% else %>
+						  <%= button_to 'Upvote', post_likes_path(@post), method: :post %>
+						<% end %>
+						</div>
+
+						<div class="col-sm-1">
+						<% pre_downvote = @post.downvotes.find { |downvote| downvote.user_id == current_user.id} %>
+						<% if pre_downvote %>
+						  <%= button_to 'Downvote', post_downvote_path(@post, pre_downvote), method: :delete %>
+						<% else %>
+						  <%= button_to 'Downvote', post_downvotes_path(@post), method: :post %>
+						<% end %>
+						</div>
+						<% end %>
+						</div>
+
+					</div>
+
+
+
+					<% @post.comment.each do |c| %>
+
+
+          <div class="row">
+            <!-- /col-sm-12 -->
+          </div><!-- /row -->
+          <div class="row">
+						<div class="row comnts">
+
+				          </div>
+
+				      </div>
+            <div class="col-sm-1">
+              <div class="thumbnail">
+                <img class="img-responsive user-photo" src="http://www.31minutos.cl/wp-content/uploads/2014/02/thumb-bodoque-300x300.jpg">
+              </div><!-- /thumbnail -->
+            </div><!-- /col-sm-1 -->
+
+            <div class="col-sm-5">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <strong><%= c.user.name+' '+c.user.lastname %></strong> <span class="text-muted"><%= time_ago_in_words(c.created_at) %></span>
+                </div>
+                  <div class="panel-body">
+                  <%=c.text%>
+									<br>
+									<br>
+									<%= link_to "Show Comment", comment_path(c) %>
+                </div><!-- /panel-body -->
+              </div><!-- /panel panel-default -->
+            </div><!-- /col-sm-5 -->
+						<% end %>
+          </div><!-- /container -->
+          </div>
+
+
+
+		<div class="col-md-4 col-md-offset-0">
+      <div class="related_area">
+
+
+
+  			<form action="" method="POST">
+
+            <div class="form-group">
+              <h1>Related Post</h1>
+            </div>
+
+  					<div class="form-group">
+
+  							<figure class="img-responsive">
+
+  	            	<img src="https://www.mallsyoutletsvivo.cl/vivo-imperio/wp-content/uploads/sites/4/2018/07/logo-Movistar.jpg" width= 150px height=150px>
+
+  							</figure>
+  					</div>
+
+  					<div class="form-group">
+  							<figure class="img-responsive">
+  	            	<img src="https://images-na.ssl-images-amazon.com/images/I/51ZqPur7%2BLL._SX466_.jpg" width= 150px height= 150px>
+
+  							</figure>
+  					</div>
+
+  					<div class="form-group">
+  							<figure class="img-responsive">
+  	            	<img src="https://www2.jumbo.cl/uploads/2019/04/logoJumbo.jpeg" width="87%" height="87%">
+
+  							</figure>
+  					</div>
+
+  			</form>
+	     </div>
+			 <br>
+			 <div class="col-sm-2">
+				<% if user_signed_in? %>
+			 <% pre_inappropriate = @post.inappropriates.find { |inappropriate| inappropriate.user_id == current_user.id} %>
+			 <% if pre_inappropriate %>
+			 	<%= button_to 'Inappropriate', post_inappropriate_path(@post, pre_inappropriate), method: :delete %>
+			 <% else %>
+			 	<%= button_to 'Inappropriate', post_inappropriates_path(@post), method: :post %>
+			 <% end %>
+			 <% end %>
+			 </div>
+
+
+	</div>
+</div>
+
+<% if current_user.present? %>
+<% if current_user.id == @post.user_id %>
+	<a type="submit" class="btn btn-primary" href="/posts/<%= @post.id %>/edit">Edit</a>
+<% end %>
+<% end %>
+</div>

@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    @posts = Post.all
+    @posts = Post.search(params[:search])
   end
 
   # GET /posts/1
@@ -69,6 +69,6 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:gps, :title, :description, :location, :country, :status, :city, :files, :state, :wall_id, :user_id, :admin_id, :super_admin_id)
+      params.require(:post).permit(:title, :description, :location, :country, :city, :state, :user_id, :image)
     end
 end

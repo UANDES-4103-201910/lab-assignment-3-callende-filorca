@@ -1,13 +1,32 @@
 Rails.application.routes.draw do
-  get 'index/home_page'
-	 root to: 'index#home_page'
+  get 'top/index'
+  get 'users/index'
+  get 'use/' => "term#use"
+  get 'service/' => "term#service"
+
+
+  root "posts#index"
   resources :comments
-  resources :posts
   resources :walls
-  resources :users
-  resources :admins
-  resources :super_admins
+  resources :posts
   resources :blacklists
-  resources :admin_profiles
+  resources :top
+  resources :term
+
+  match '/users',   to: 'users#index',   via: 'get'
+  match '/users/show/:id',   to: 'users#show',   via: 'get'
+  match '/users/edit/:id',   to: 'users#edit',   via: 'get'
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+  resources :posts do
+    resources :likes
+  end
+  resources :posts do
+    resources :downvotes
+  end
+  resources :posts do
+    resources :inappropriates
+  end
+
+
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-end

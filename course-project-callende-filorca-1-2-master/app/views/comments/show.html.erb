@@ -1,29 +1,32 @@
-<p id="notice"><%= notice %></p>
+<div class="container">
+ <div class="row">
 
-<p>
-  <strong>Text:</strong>
-  <%= @comment.text %>
-</p>
+          <div class="form-group">
+            <h2> Comment: </h2>
+            <br>
+						<a><%= link_to('Posted by: '+' '+User.find(@comment.user_id).name+' '+User.find(@comment.user_id).lastname, '/users/show/'+User.find(@comment.user_id).id.to_s )%></a>
+            <br>
+            <br>
+            <textarea disabled> <%= @comment.text %></textarea>
+            <br>
+            <br>
+            <div class="form-group" align="center">
 
-<p>
-  <strong>Link:</strong>
-  <%= @comment.link %>
-</p>
+              <%= image_tag(@comment.image, style:'width:200px')  if @comment.image.attached?%>
+            </div>
 
-<p>
-  <strong>Picture:</strong>
-  <%= @comment.picture %>
-</p>
+        <% if current_user.present? %>
+        <% if current_user.id == @comment.user_id %>
+        <br>
+        <br>
+        	<a type="Edit" class="btn btn-primary" href="/comments/<%= @comment.id %>/edit">Edit</a>
+        <% end %>
+        <% end %>
 
-<p>
-  <strong>User:</strong>
-  <%= @comment.user %>
-</p>
+        <a type="Back" class="btn btn-primary" href="/posts/<%= @comment.post_id %>">Back</a>
 
-<p>
-  <strong>Post:</strong>
-  <%= @comment.post %>
-</p>
 
-<%= link_to 'Edit', edit_comment_path(@comment) %> |
-<%= link_to 'Back', comments_path %>
+
+      </div>
+    </div>
+  </div>
